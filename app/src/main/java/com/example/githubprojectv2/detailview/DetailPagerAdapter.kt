@@ -6,9 +6,8 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 
 class DetailPagerAdapter(
         activity: AppCompatActivity,
-        arg: String
     ) : FragmentStateAdapter(activity) {
-    val data = arg
+
 
     override fun getItemCount(): Int {
         return 2
@@ -17,8 +16,9 @@ class DetailPagerAdapter(
     override fun createFragment(position: Int): Fragment {
         var fragment: Fragment? = null
         when (position) {
-            0 -> fragment = FollowsFragment(data)
-            1 -> fragment = FollowerFragment(data)
+            0 -> fragment = FollowsFragment()
+
+            1 -> fragment = FollowerFragment()
         }
 
         return fragment as Fragment

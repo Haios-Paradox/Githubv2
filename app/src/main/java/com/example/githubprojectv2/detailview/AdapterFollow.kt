@@ -3,18 +3,18 @@ package com.example.githubprojectv2.detailview
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.example.githubprojectv2.ViewHolderAccount
 import com.example.githubprojectv2.api.ResponseFollowItem
 import com.example.githubprojectv2.databinding.AccountItemRowBinding
-import com.example.githubprojectv2.searchview.AdapterAccount
-import com.example.githubprojectv2.ViewHolderAccount
 
 class AdapterFollow(
     private val listFollow : ArrayList<ResponseFollowItem>
 ) : RecyclerView.Adapter<ViewHolderAccount>() {
 
-    private lateinit var onItemClickCallback: AdapterFollow.OnItemClickCallback
+    private lateinit var onItemClickCallback: OnItemClickCallback
 
-    fun setOnItemClickCallback(onItemClickCallback: AdapterFollow.OnItemClickCallback) {
+    fun setOnItemClickCallback(onItemClickCallback: OnItemClickCallback) {
         this.onItemClickCallback = onItemClickCallback
 
     }
@@ -31,7 +31,7 @@ class AdapterFollow(
     override fun onBindViewHolder(holder: ViewHolderAccount, position: Int) {
         with(holder){
             with(listFollow[position]){
-                com.bumptech.glide.Glide.with(binding.rowAvatar)
+                Glide.with(binding.rowAvatar)
                     .load(avatarUrl)
                     .circleCrop()
                     .into(binding.rowAvatar)
@@ -43,11 +43,10 @@ class AdapterFollow(
             }
         }
     }
+
     interface OnItemClickCallback{
         fun onItemClicked(data:String)
     }
-
-
 
     override fun getItemCount(): Int {
         return listFollow.size

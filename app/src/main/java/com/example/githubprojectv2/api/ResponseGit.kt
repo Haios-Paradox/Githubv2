@@ -15,6 +15,7 @@ data class ResponseGit(
 	@field:SerializedName("items")
 	val items: List<ItemsItem>
 )
+
 @Parcelize
 data class ItemsItem(
 
@@ -175,12 +176,6 @@ data class Accounts(
 	@field:SerializedName("node_id")
 	val nodeId: String
 ) : Parcelable
-
-data class ResponseFollow(
-
-	@field:SerializedName("ResponseFollow")
-	val responseFollow: List<ResponseFollowItem>
-)
 
 @Parcelize
 data class ResponseFollowItem(

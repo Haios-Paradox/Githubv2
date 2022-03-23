@@ -1,18 +1,15 @@
 package com.example.githubprojectv2.detailview
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
+import android.view.View
 import androidx.annotation.StringRes
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
-import com.example.githubprojectv2.api.ApiConfig
-import com.example.githubprojectv2.api.Accounts
 import com.example.githubprojectv2.R
+import com.example.githubprojectv2.api.Accounts
 import com.example.githubprojectv2.databinding.ActivityDetailBinding
 import com.google.android.material.tabs.TabLayoutMediator
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class DetailActivity : AppCompatActivity() {
 
@@ -23,38 +20,27 @@ class DetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         _binding = ActivityDetailBinding.inflate(layoutInflater)
 
-        getAccountData(intent.getStringExtra(USER_ID)as String)
-
-
-
-
+        val userId = intent.getStringExtra(USER_ID)as String
+        val mainViewModel = ViewModelProvider(this@DetailActivity, FollowFactory(userId))
+            .get(DetailViewModel::class.java)
+        mainViewModel.accountDetail().observe(this) {
+            setAccount(it)
+        }
+        mainViewModel.loading().observe(this){
+            if (it) {
+                binding.progressBar.visibility = View.VISIBLE
+            } else {
+                binding.progressBar.visibility = View.GONE
+            }
+        }
+        mainViewModel.accountLoading().observe(this){
+            if (it) {
+                binding.progressBarUser.visibility = View.VISIBLE
+            } else {
+                binding.progressBarUser.visibility = View.GONE
+            }
+        }
         setContentView(binding.root)
-    }
-
-    private fun getAccountData(id: String){
-        val client = ApiConfig.getApiService().getUser(id)
-        client.enqueue(object : Callback<Accounts> {
-            override fun onResponse(
-                call: Call<Accounts>,
-                response: Response<Accounts>
-            ) {
-                //showLoading(false)
-                if (response.isSuccessful) {
-                    val responseBody = response.body()
-                    if (responseBody != null) {
-                        setAccount(responseBody)
-                    }
-                } else {
-                    Log.e(TAG, "Fail to connect, bruh moment")
-                }
-            }
-
-            override fun onFailure(call: Call<Accounts>, t: Throwable) {
-                Log.e(TAG, "Fail to connect, bruh moment")
-            }
-
-
-        })
     }
 
     private fun setAccount(akun: Accounts) {
@@ -62,11 +48,18 @@ class DetailActivity : AppCompatActivity() {
         Glide.with(this)
             .load(akun.avatarUrl)
             .circleCrop()
-            .into(binding.avatar)
+            .into(binding.accountAvatar)
         binding.accountName.text = akun.name
         binding.accountUname.text = akun.login
+        binding.accountBio.text = akun.bio
+        binding.accountCompany.text = akun.company
+        binding.accountEmail.text = akun.email
+        binding.accountLocation.text = akun.location
+        binding.accountFollower.text = akun.followers.toString()
+        binding.accountFollowing.text = akun.following.toString()
+        binding.accountRepo.text = akun.publicRepos.toString()
 
-        val detailPagerAdapter = DetailPagerAdapter(this,akun.login)
+        val detailPagerAdapter = DetailPagerAdapter(this)
         binding.viewPager.adapter = detailPagerAdapter
 
         TabLayoutMediator(binding.tabs, binding.viewPager) { tab, position ->

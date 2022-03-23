@@ -49,6 +49,7 @@ class AdapterAccount(
     override fun getItemCount(): Int {
         return listAccount.size
     }
+
     interface OnItemClickCallback{
         fun onItemClicked(data:String)
     }
