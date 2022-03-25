@@ -9,6 +9,8 @@ import kotlinx.coroutines.launch
 
 class FavViewModel(application: Application) : AndroidViewModel(application) {
     val readFavData : LiveData<List<FavData>>
+
+
     private val repository : FavRepository
 
     init {
@@ -27,6 +29,10 @@ class FavViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch(Dispatchers.IO){
             repository.deleteFav(data)
         }
+    }
+
+    fun checkFav(data:String):LiveData<Boolean>{
+        return repository.checkExists(data)
     }
 
 }

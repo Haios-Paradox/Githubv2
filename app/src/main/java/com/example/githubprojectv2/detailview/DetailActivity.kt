@@ -1,6 +1,7 @@
 package com.example.githubprojectv2.detailview
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
@@ -27,21 +28,15 @@ class DetailActivity : AppCompatActivity() {
         val mainViewModel = ViewModelProvider(this@DetailActivity, FollowFactory(userId))
             .get(DetailViewModel::class.java)
 
-        mainViewModel.accountDetail().observe(this) { account->
-            setAccount(account)
-            setFavorite(false)
-            favViewModel.readFavData.observe(this) { favUser ->
-                for(user in favUser){
-                    if(user.id==account.login) {
-                        setFavorite(true)
-                        break
-                    }
-
-                }
-
+        mainViewModel.accountDetail().observe(this){akun->
+            setAccount(akun)
+            favViewModel.checkExists(akun.login).observe(this){fav->
+                Log.i("Fwish",fav.toString())
+                if(fav)setFavorite(akun,true)
+                else setFavorite(akun,false)
             }
-        }
 
+        }
 
         mainViewModel.loading().observe(this){
             if (it) {
@@ -58,12 +53,17 @@ class DetailActivity : AppCompatActivity() {
                 binding.progressBarUser.visibility = View.GONE
             }
         }
+
         setContentView(binding.root)
     }
 
-    private fun setFavorite(favorite:Boolean){
+    private fun setFavorite(akun: Accounts,favorite:Boolean){
         if(favorite)Glide.with(this).load(R.drawable.ic_fav_fill).into(binding.accountFav)
         else Glide.with(this).load(R.drawable.ic_fav_empty).into(binding.accountFav)
+        binding.accountFav.setOnClickListener{
+            if(!akun.favorite)setAsFavorite(akun)
+            else setAsFavoritent(akun)
+        }
     }
 
     private fun setAccount(akun: Accounts) {
@@ -82,15 +82,10 @@ class DetailActivity : AppCompatActivity() {
         binding.accountFollowing.text = akun.following.toString()
         binding.accountRepo.text = akun.publicRepos.toString()
 
-        binding.accountFav.setOnClickListener{
-            if(!akun.favorite)setAsFavorite(akun)
-            else setAsFavoritent(akun)
-        }
+
 
         val detailPagerAdapter = DetailPagerAdapter(this)
         binding.viewPager.adapter = detailPagerAdapter
-
-
 
         TabLayoutMediator(binding.tabs, binding.viewPager) { tab, position ->
             tab.text = resources.getString(TAB_TITLES[position])
@@ -107,7 +102,7 @@ class DetailActivity : AppCompatActivity() {
 
     private fun setAsFavorite(akun: Accounts) {
         val favViewModel = ViewModelProvider(this).get(FavViewModel::class.java)
-        val favdata = FavData(akun.login,true,akun.avatarUrl)
+        val favdata = FavData(akun.login,akun.avatarUrl)
         favViewModel.addFav(favdata)
     }
 

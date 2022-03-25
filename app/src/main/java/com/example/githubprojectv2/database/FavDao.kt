@@ -16,4 +16,7 @@ interface FavDao {
 
     @Query("DELETE FROM fav_data WHERE id = :id")
     suspend fun deleteFav(id:String)
+
+    @Query("SELECT EXISTS(SELECT * FROM fav_data WHERE id = :id)")
+    suspend fun checkFav(id : String) : Boolean
 }

@@ -7,6 +7,6 @@ import androidx.room.PrimaryKey
 data class FavData(
     @PrimaryKey(autoGenerate = false)
     val id : String,
-    val favorite : Boolean,
-    val avatar:String
+    val avatar:String,
+    var favorite:Boolean = true
 )

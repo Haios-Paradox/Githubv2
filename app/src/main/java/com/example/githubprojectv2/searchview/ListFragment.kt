@@ -104,7 +104,7 @@ class ListFragment : Fragment() {
 
     private fun insertToDatabase(id:String,avatar:String){
         val favViewModel = ViewModelProvider(this).get(FavViewModel::class.java)
-        val favdata = FavData(id,true,avatar)
+        val favdata = FavData(id,avatar,true)
         favViewModel.addFav(favdata)
     }
 }
