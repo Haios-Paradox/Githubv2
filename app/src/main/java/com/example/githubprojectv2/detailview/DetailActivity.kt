@@ -31,14 +31,11 @@ class DetailActivity : AppCompatActivity() {
             setAccount(account)
             setFavorite(false)
             favViewModel.readFavData.observe(this) { favUser ->
-                for(user in favUser){
+                for(user in favUser)
                     if(user.id==account.login) {
                         setFavorite(true)
                         break
                     }
-
-                }
-
             }
         }
 
