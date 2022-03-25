@@ -9,6 +9,5 @@ class FollowFactory(
 {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         return DetailViewModel(data) as T
-
     }
 }

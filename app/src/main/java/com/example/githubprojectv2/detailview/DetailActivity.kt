@@ -8,6 +8,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.example.githubprojectv2.R
 import com.example.githubprojectv2.api.Accounts
+import com.example.githubprojectv2.database.FavData
+import com.example.githubprojectv2.database.FavViewModel
 import com.example.githubprojectv2.databinding.ActivityDetailBinding
 import com.google.android.material.tabs.TabLayoutMediator
 
@@ -21,11 +23,26 @@ class DetailActivity : AppCompatActivity() {
         _binding = ActivityDetailBinding.inflate(layoutInflater)
 
         val userId = intent.getStringExtra(USER_ID)as String
+        val favViewModel = ViewModelProvider(this).get(FavViewModel::class.java)
         val mainViewModel = ViewModelProvider(this@DetailActivity, FollowFactory(userId))
             .get(DetailViewModel::class.java)
-        mainViewModel.accountDetail().observe(this) {
-            setAccount(it)
+
+        mainViewModel.accountDetail().observe(this) { account->
+            setAccount(account)
+            setFavorite(false)
+            favViewModel.readFavData.observe(this) { favUser ->
+                for(user in favUser){
+                    if(user.id==account.login) {
+                        setFavorite(true)
+                        break
+                    }
+
+                }
+
+            }
         }
+
+
         mainViewModel.loading().observe(this){
             if (it) {
                 binding.progressBar.visibility = View.VISIBLE
@@ -33,6 +50,7 @@ class DetailActivity : AppCompatActivity() {
                 binding.progressBar.visibility = View.GONE
             }
         }
+
         mainViewModel.accountLoading().observe(this){
             if (it) {
                 binding.progressBarUser.visibility = View.VISIBLE
@@ -41,6 +59,11 @@ class DetailActivity : AppCompatActivity() {
             }
         }
         setContentView(binding.root)
+    }
+
+    private fun setFavorite(favorite:Boolean){
+        if(favorite)Glide.with(this).load(R.drawable.ic_fav_fill).into(binding.accountFav)
+        else Glide.with(this).load(R.drawable.ic_fav_empty).into(binding.accountFav)
     }
 
     private fun setAccount(akun: Accounts) {
@@ -59,15 +82,33 @@ class DetailActivity : AppCompatActivity() {
         binding.accountFollowing.text = akun.following.toString()
         binding.accountRepo.text = akun.publicRepos.toString()
 
+        binding.accountFav.setOnClickListener{
+            if(!akun.favorite)setAsFavorite(akun)
+            else setAsFavoritent(akun)
+        }
+
         val detailPagerAdapter = DetailPagerAdapter(this)
         binding.viewPager.adapter = detailPagerAdapter
+
+
 
         TabLayoutMediator(binding.tabs, binding.viewPager) { tab, position ->
             tab.text = resources.getString(TAB_TITLES[position])
         }.attach()
         supportActionBar?.elevation = 0f
+    }
+
+    private fun setAsFavoritent(akun: Accounts) {
+        val favViewModel = ViewModelProvider(this).get(FavViewModel::class.java)
+        favViewModel.deleteFavData(akun.login)
 
 
+    }
+
+    private fun setAsFavorite(akun: Accounts) {
+        val favViewModel = ViewModelProvider(this).get(FavViewModel::class.java)
+        val favdata = FavData(akun.login,true,akun.avatarUrl)
+        favViewModel.addFav(favdata)
     }
 
     companion object{

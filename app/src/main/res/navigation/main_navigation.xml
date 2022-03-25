@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.example.githubprojectv2.HomeFragment"
+        android:name="com.example.githubprojectv2.searchview.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" >
         <action

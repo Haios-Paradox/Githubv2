@@ -12,6 +12,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class ListViewModel(var data: String) : ViewModel() {
+
     private val _accounts = MutableLiveData<List<ItemsItem>>()
     fun accounts() : LiveData<List<ItemsItem>>{
         return _accounts
@@ -48,7 +49,6 @@ class ListViewModel(var data: String) : ViewModel() {
                     }
                 } else {
                     Log.e(TAG, "Fail to connect, bruh moment")
-
                 }
             }
             override fun onFailure(call: Call<ResponseGit>, t: Throwable) {
@@ -61,6 +61,4 @@ class ListViewModel(var data: String) : ViewModel() {
     private fun showLoading(isLoading: Boolean) {
         _loading.value = isLoading
     }
-
-
 }

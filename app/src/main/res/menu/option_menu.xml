@@ -13,6 +13,10 @@
             android:title="@string/menu_1"
             android:icon = "@drawable/home_icon"
             app:showAsAction="always" />
+        <item android:id="@+id/menu3"
+            android:title="@string/favorite"
+            android:icon = "@drawable/favorite_icon"
+            app:showAsAction="always"/>
         <item android:id="@+id/menu2"
             android:title="@string/menu_2" />
     </group>

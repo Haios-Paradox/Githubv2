@@ -1,4 +1,4 @@
-package com.example.githubprojectv2.searchview
+package com.example.githubprojectv2.favoriteview
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -6,13 +6,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.githubprojectv2.R
 import com.example.githubprojectv2.ViewHolderAccount
-import com.example.githubprojectv2.api.ItemsItem
+import com.example.githubprojectv2.database.FavData
 import com.example.githubprojectv2.databinding.AccountItemRowBinding
 
-class AdapterAccount(
-    private val listAccount : ArrayList<ItemsItem>
-) : RecyclerView.Adapter<ViewHolderAccount>() {
-
+class AdapterFavorite(
+    private val listFavorite : ArrayList<FavData>
+    ) : RecyclerView.Adapter<ViewHolderAccount>() {
     private lateinit var onItemClickCallback: OnItemClickCallback
 
     fun setOnItemClickCallback(onItemClickCallback: OnItemClickCallback) {
@@ -32,9 +31,9 @@ class AdapterAccount(
 
     override fun onBindViewHolder(holder: ViewHolderAccount, position: Int) {
         with(holder){
-            with(listAccount[position]){
+            with(listFavorite[position]){
                 Glide.with(binding.rowAvatar)
-                    .load(avatarUrl)
+                    .load(avatar)
                     .circleCrop()
                     .into(binding.rowAvatar)
 
@@ -47,13 +46,13 @@ class AdapterAccount(
                         .load(R.drawable.ic_fav_empty)
                         .into(binding.favIcon)
 
-                binding.rowName.text = this.login
+                binding.rowName.text = id
                 holder.itemView.setOnClickListener{
-                    onItemClickCallback.onItemClicked(listAccount[holder.adapterPosition].login)
+                    onItemClickCallback.onItemClicked(listFavorite[holder.adapterPosition].id)
                 }
                 binding.favIcon.setOnClickListener{
                     onItemClickCallback.onFavClicked(
-                        listAccount[holder.adapterPosition]
+                        listFavorite[holder.adapterPosition]
                     )
                 }
             }
@@ -61,12 +60,11 @@ class AdapterAccount(
     }
 
     override fun getItemCount(): Int {
-        return listAccount.size
+        return listFavorite.size
     }
 
     interface OnItemClickCallback{
         fun onItemClicked(data:String)
-        fun onFavClicked(fav: ItemsItem)
+        fun onFavClicked(fav: FavData)
     }
 }
-

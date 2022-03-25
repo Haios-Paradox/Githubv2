@@ -11,7 +11,8 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class DetailViewModel(var data: String) : ViewModel() {
+class DetailViewModel(val data: String) : ViewModel() {
+
     private val _accountsFollower = MutableLiveData<List<ResponseFollowItem>>()
     fun accountsFollower() : LiveData<List<ResponseFollowItem>> {
         return _accountsFollower
@@ -106,9 +107,7 @@ class DetailViewModel(var data: String) : ViewModel() {
                 showLoadingAccount(false)
                 if (response.isSuccessful) {
                     val responseBody = response.body()
-
                         _accountDetail.value = responseBody!!
-
                 } else {
                     Log.e(DetailActivity.TAG, "Fail to connect, bruh moment")
                 }
@@ -117,8 +116,6 @@ class DetailViewModel(var data: String) : ViewModel() {
             override fun onFailure(call: Call<Accounts>, t: Throwable) {
                 Log.e(DetailActivity.TAG, "Fail to connect, bruh moment")
             }
-
-
         })
     }
 

@@ -17,7 +17,6 @@ class DetailPagerAdapter(
         var fragment: Fragment? = null
         when (position) {
             0 -> fragment = FollowsFragment()
-
             1 -> fragment = FollowerFragment()
         }
 

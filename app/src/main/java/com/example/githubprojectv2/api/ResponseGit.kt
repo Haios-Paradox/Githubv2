@@ -74,7 +74,9 @@ data class ItemsItem(
 	val nodeId: String,
 
 	@field:SerializedName("organizations_url")
-	val organizationsUrl: String
+	val organizationsUrl: String,
+
+	var favorite: Boolean = false
 ) : Parcelable
 
 @Parcelize
@@ -174,7 +176,9 @@ data class Accounts(
 	val location: String,
 
 	@field:SerializedName("node_id")
-	val nodeId: String
+	val nodeId: String,
+
+	var favorite: Boolean = false
 ) : Parcelable
 
 @Parcelize
@@ -232,5 +236,7 @@ data class ResponseFollowItem(
 	val nodeId: String,
 
 	@field:SerializedName("organizations_url")
-	val organizationsUrl: String
+	val organizationsUrl: String,
+
+	var favorite: Boolean = false
 ):Parcelable
